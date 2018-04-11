@@ -1,0 +1,118 @@
+######################
+## LIGHTS - Movie mode
+######################
+- id: serious_media_chromecast
+  alias: Turn down lights if chromecast media equals true
+  trigger:
+  - entity_id: media_player.bandit_tv
+    platform: state
+    to: playing
+  condition:
+  - condition: state
+    entity_id: Input_boolean.media_time
+    state: 'off'
+  - condition: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: 5
+  - condition: numeric_state
+    entity_id: media_player.bandit_tv
+    value_template: '{{state.attributes.media_duration}}'
+    above: 600
+  action:
+    - service: script.movie_script
+- id: serious_media_kodi
+  alias: Turn down lights if serious media equals true
+  trigger:
+  - entity_id: media_player.kodi
+    platform: state
+    to: playing
+  condition:
+  - condition: state
+    entity_id: Input_boolean.media_time
+    state: 'off'
+  - condition: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: 5
+  - condition: numeric_state
+    entity_id: media_player.bandit_tv
+    value_template: '{{state.attributes.media_duration}}'
+    above: 600
+  action:
+    - service: script.movie_script
+- id: movie_mode
+  alias: turn down lights to movie mode
+  trigger:
+  - platform: event
+    event_type: html5_notification.clicked
+    event_data:
+      action: movie_mode
+  action:
+  - service: script.record_brightness
+  - entity_id: switch.fluxer
+    service: switch.turn_off
+  - entity_id: scene.livingroom_dim
+    service: scene.turn_on
+  - service: input_boolean.turn_on
+    data:
+      entity_id: input_boolean.media_time
+  - service: script.notify_movie_mode
+- id: media_pause
+  alias: Media player paused/stopped
+  trigger:
+  - platform: state
+    entity_id: media_player.bandit_tv
+    from: playing
+    to: paused
+  - platform: state
+    entity_id: media_player.kodi
+    from: playing
+    to: paused
+  condition:
+  - condition: state
+    entity_id: Input_boolean.media_time
+    state: 'on'
+  action:
+  - entity_id: switch.fluxer
+    service: switch.turn_on
+  - service: script.return_brightness
+- id: media_play
+  alias: Media player playing
+  trigger:
+  - entity_id: media_player.bandit_tv
+    platform: state
+    to: playing
+  - entity_id: media_player.kodi
+    platform: state
+    to: playing
+  condition:
+  - condition: state
+    entity_id: Input_boolean.media_time
+    state: 'on'
+  action:
+  - service: script.record_brightness
+  - entity_id: switch.fluxer
+    service: switch.turn_off
+  - entity_id: scene.livingroom_dim
+    service: scene.turn_on
+- id: media_idle
+  alias: Media player idle
+  trigger:
+  - platform: state
+    entity_id: media_player.bandit_tv
+    to: 'off'
+  - platform: state
+    entity_id: media_player.kodi
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: Input_boolean.media_time
+    state: 'on'
+  action:
+    - entity_id: switch.fluxer
+      service: switch.turn_on
+    - service: script.return_brightness
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.media_time
+    - delay: 00:00:10

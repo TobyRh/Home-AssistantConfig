@@ -1,0 +1,18 @@
+  - platform: gpslogger 
+
+  - platform: bluetooth_tracker
+    new_device_defaults:
+      track_new_devices: False
+      hide_if_away: False
+    interval_seconds: 40
+
+  - platform: nmap_tracker
+    hosts: 192.168.0.1/24
+    home_interval: 10
+    exclude:
+      - 192.168.0.14
+      - 191.168.0.12
+    new_device_defaults:
+      track_new_devices: False
+      hide_if_away: False
+    interval_seconds: 90

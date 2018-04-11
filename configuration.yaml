@@ -1,0 +1,131 @@
+homeassistant:
+  name: Home
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: 14
+  unit_system: metric
+  time_zone: Europe/Copenhagen
+  customize: !include customize.yaml
+
+# Includes for better organization
+frontend: !include frontend.yaml
+group: !include groups.yaml
+automation: !include_dir_merge_list automations
+script: !include_dir_merge_named scripts
+scene: !include_dir_merge_list scenes
+input_boolean: !include input_boolean.yaml
+input_number: !include numbers.yaml
+input_select: !include input_select.yaml
+media_player: !include media_players.yaml
+device_tracker: !include device_trackers.yaml
+sensor: !include sensors.yaml
+switch: !include switches.yaml
+
+
+config: # Enables configuration UI
+updater: # Checks for available updates
+discovery: # Discover some devices automatically
+history: # Enables support for tracking state changes over time.
+logbook: # View all events in a logbook
+#map: # Enables a map showing the location of tracked devices
+sun: # Track the sun
+#conversation: # Allows you to issue voice commands from the frontend in enabled browsers
+
+cloud:
+  alexa:
+    filter:
+      exclude_domains:
+        - script
+        - automation
+        - scene
+        - group
+        - cover
+
+http:
+  api_password: !secret http_password
+  base_url: !secret base_link
+  ssl_certificate: !secret ssl_cert
+  ssl_key: !secret ssl_key
+
+recorder:
+  purge_interval: 1
+  purge_keep_days: 5
+  exclude:
+    entities:
+      - sensor.time
+      - sensor.since_last_boot_templated
+
+influxdb:
+
+panel_iframe:
+  configurator:
+    title: Configurator
+    icon: mdi:wrench
+    url: !secret configurator_url
+
+light:
+ - platform: group
+   name: Stuens lys
+   entities:
+    - light.sofaen
+    - light.spisebordet
+
+weather:
+  - platform: darksky
+    api_key: !secret api_darkSky
+
+binary_sensor:
+  - platform: trend
+    sensors:
+      sudden_temp_change:
+        entity_id: sensor.stuen_temperature
+        min_gradient: -0.002777778
+  - platform: trend
+    sensors:
+      sudden_temp_sove:
+        entity_id: sensor.sovevrelse_temperature
+        min_gradient: -0.0015
+
+# Netatmo
+netatmo:
+  api_key: !secret netatmo_api_key
+  secret_key: !secret netatmo_secret
+  username: !secret netatmo_user
+  password: !secret netatmo_passwd
+
+# Tado
+tado:
+  username: !secret tado_user
+  password: !secret tado_passwd
+
+# Text to speech
+tts:
+  platform: google
+  cache: true
+  cache_dir: /config/tts
+  time_memory: 300
+
+notify:
+  - platform: html5
+    name: HTML5
+    gcm_api_key: !secret html5_api_key
+    gcm_sender_id: !secret html5_sender_id
+  - platform: lannouncer
+    name: Announcer
+    host: !secret lannouncer
+
+google_assistant:
+  project_id: !secret googass_project_id
+  client_id: !secret googass_client_id
+  access_token: !secret googass_token
+  api_key: !secret googass_api_key
+  exposed_domains:
+    - light
+    - climate
+
+proximity:
+  home:
+    zone: home
+    devices:
+      - device_tracker.9063f756
+      - device_tracker.52005fa8f45ec44b

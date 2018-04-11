@@ -1,0 +1,9 @@
+  - platform: braviatv_psk
+    name: Sony TV
+    host: 192.168.0.20
+    psk: sony
+    mac: 90:48:9A:97:C3:AD
+  - platform: cast
+    host: 192.168.0.18
+  - platform: kodi
+    host: 192.168.0.13

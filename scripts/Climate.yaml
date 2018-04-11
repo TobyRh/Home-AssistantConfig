@@ -1,0 +1,55 @@
+#####################
+## CLIMATE
+#####################
+door_script:
+  alias: Time to close to Door
+  sequence:
+    service: script.notify_dist
+    data_template:
+      message: Tid til at lukke døren
+      tag: 'notification-close-door'
+set_temp:
+  alias: Set the appropriate temperature
+  sequence:
+  - service: climate.set_temperature
+    data_template:
+      entity_id: climate.stuen
+      temperature: >
+        {% if states.proximity.home.state | int >= 5 -%}
+          {{ 16 | int }}
+        {% elif (states.proximity.home.state | int >= 2) -%}
+          {{ 18 | int }}
+        {% elif (states.proximity.home.state | int >= 1) -%}
+          {{ 19 | int }}
+        {% elif (states.proximity.home.state | int == 0) -%}
+          {% if (states.input_boolean.asleep_bool.state == "on") -%}
+            {{ 17 | int }}
+          {% elif (states.sensor.kristine_status.state == "Home") -%}
+            {{ 21 | int }}
+          {% else %}
+            {{ 20 | int }}
+          {% endif %}
+        {% else %}
+          {{ 20 | int }}
+        {% endif %}
+  - service: climate.set_temperature
+    data_template:
+      entity_id: climate.sovevrelse
+      temperature: >
+        {% if (states.proximity.home.state | int >= 5) -%}
+          {{ 13 | int }}
+        {% elif (states.proximity.home.state | int >= 2) -%}
+          {{ 14 | int }}
+        {% elif (states.proximity.home.state | int >= 1) -%}
+          {{ 15 | int }}
+        {% elif (states.proximity.home.state | int == 0) -%}
+          {% if (states.input_boolean.asleep_bool.state == "on") -%}
+            {{ 14 | int }}
+          {% elif (states.sensor.kristine_status.state == "Home") -%}
+            {{ 18 | int }}
+          {% else %}
+            {{ 17 | int }}
+          {% endif %}
+        {% else %}
+          {{ 17 | int }}
+        {% endif %}

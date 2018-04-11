@@ -1,0 +1,25 @@
+  media_time:
+    name: Media Time
+    initial: off
+    icon: mdi:television
+  vacation:
+    name: Vacation
+    initial: off
+  tobber_charging:
+    name: Tobber Charging
+    initial: off
+  kris_charging:
+    name: Kris Charging
+    initial: off
+  asleep_bool:
+    name: Asleep
+    initial: off
+  co2_check:
+    name: CO2 Checks
+    initial: off 
+  tester:
+    name: Test RGB
+    initial: off
+  first_light:
+    name: First Light
+    initial: on

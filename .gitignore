@@ -1,0 +1,39 @@
+#######################
+# Ignore secrets.yaml #
+#######################
+secrets.yaml
+
+###############################
+# Ignore specific directories #
+###############################
+tts
+deps
+.cloud
+
+#########################
+# Ignore specific files #
+#########################
+known_devices.yaml
+entity_registry.yaml
+.google.token
+.HA_VERSION
+.uuid
+gitupdate.sh
+OZW_Log.txt
+
+########################
+# Catch-all extensions #
+########################
+*.pid
+*.xml
+*.csr
+*.crt
+*.key
+*.conf
+*.pickle
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.db
+*.log

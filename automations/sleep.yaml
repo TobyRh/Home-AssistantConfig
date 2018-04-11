@@ -1,0 +1,41 @@
+#####################
+## SLEEP
+#####################
+- id: asleep_change
+  alias: Light + TV off for 10 minutes at night equals asleep
+  trigger:
+  - entity_id: group.all_lights
+    platform: state
+    to: 'off'
+    for:
+      minutes: 5
+  condition:
+    - condition: and
+      conditions:
+        - condition: time
+          after: '20:00:00'
+          before: '05:30:00'
+        - condition: state
+          entity_id: proximity.home
+          state: '0'
+  action:
+  - service: input_boolean.turn_on
+    data:
+      entity_id: input_boolean.asleep_bool
+
+- id: asleep_reset
+  alias: Reset asleep_bool
+  trigger:
+    platform: time
+    at: '05:30:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.asleep_bool
+    state: 'on'
+  action:
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.asleep_bool
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.first_light

@@ -1,0 +1,16 @@
+sensor.netatmo_inny_co2:
+  friendly_name: Inny CO2
+sensor.netatmo_inny_humidity:
+  friendly_name: Inny Humidity
+sensor.netatmo_inny_noise:
+  friendly_name: Inny Noise
+sensor.netatmo_inny_pressure:
+  friendly_name: Inny Pressure
+sensor.netatmo_inny_temperature:
+  friendly_name: Inny Temperature
+sensor.netatmo_outty_humidity:
+  friendly_name: Outty Humidity
+sensor.netatmo_outty_temperature:
+  friendly_name: Outty Temperature
+sensor.last_update_netatmo:
+  icon: mdi:timelapse

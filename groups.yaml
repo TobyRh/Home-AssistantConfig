@@ -1,0 +1,155 @@
+#####################
+## VIEWS
+#####################
+default_view:
+  view: true
+  icon: mdi:home
+  entities:
+  - group.people_status
+  - group.tado_min
+  - group.light_stuen
+  - group.light_bad
+  - group.light_kitchen
+  - group.light_hallway
+  - group.light_bedroom
+  - input_boolean.co2_check
+
+  name: default_view
+media:
+  name: Media
+  view: true
+  icon: mdi:television
+  entities:
+  - media_player.plex_web_chrome
+  - media_player.bandit_tv
+  - media_player.sony_tv
+  - sensor.pocketcasts_unlistened_episodes
+  - media_player.kodi
+climate:
+  name: Climate
+  view: true
+  icon: mdi:thermometer
+  entities:
+  - weather.dark_sky
+  - group.netatmo
+  - group.tado_all
+  - group.env
+admin:
+  name: Admin
+  view: true
+  icon: mdi:wrench
+  entities:
+  - group.data_log
+  - switch.fluxer
+
+#####################
+## GROUPS - People
+#####################
+person_tobias:
+  name: Tobias
+  entities:
+  - group.person_tobias_wrapper
+person_tobias_wrapper:
+  name: Location
+  entities:
+  - device_tracker.admin_tobias
+  - device_tracker.oneplus
+  - device_tracker.9063f756
+person_kristine:
+  name: Kristine
+  entities:
+  - group.person_kristine_wrapper
+person_kristine_wrapper:
+  name: Location
+  entities:
+  - device_tracker.galaxy_a8_2018
+  - device_tracker.samsung_a8
+  - device_tracker.52005fa8f45ec44b
+person_alle:
+  name: Alle
+  entities:
+  - group.person_kristine_wrapper
+  - group.person_tobias_wrapper
+people_status:
+  name: People Status
+  entities:
+    - sensor.tobias_status
+    - sensor.kristine_status
+#####################
+## GROUPS - Climate
+#####################
+env:
+  name: Enviroment
+  entities:
+  - sensor.yr_symbol
+  - sun.sun
+
+netatmo:
+  name: Netatmo
+  entities:
+  - sensor.netatmo_inny_temperature_2
+  - sensor.netatmo_inny_humidity_2
+  - sensor.netatmo_inny_co2_2
+  - sensor.netatmo_inny_noise_2
+  - sensor.netatmo_inny_pressure_2
+  - sensor.netatmo_outty_temperature_2
+  - sensor.netatmo_outty_humidity_2
+  - sensor.last_update_netatmo
+  - history_graph.indoor_humiditytemperature
+
+tado_all:
+  name: Tado
+  entities:
+  - climate.stuen
+  - sensor.stuen_heating
+  - sensor.stuen_humidity
+  - sensor.stuen_power
+  - climate.sovevrelse
+  - sensor.sovevrelse_heating
+  - sensor.sovevrelse_humidity
+  - sensor.sovevrelse_power
+tado_min:
+  name: Tado
+  entities:
+  - climate.stuen
+  - climate.sovevrelse
+#####################
+## GROUPS - Lights
+#####################
+Light_stuen:
+  name: Stuens lys
+  entities:
+  - light.sofaen
+  - light.spisebordet
+  - light.kommode
+light_bad:
+  name: Badeværelset
+  entities:
+  - light.bad
+light_kitchen:
+  name: Køkkenet 
+  entities:
+  - light.sovevrelset
+light_hallway: 
+  name: Entre
+  entities:
+  - light.hallway
+light_bedroom:
+  name: Soveværelse
+  entities:
+  - light.bedlamp
+  - light.sove
+stuen_media:
+  name: Entertainment
+  entities:
+  - media_player.bandit_tv
+  - media_player.sony_tv
+#####################
+## GROUPS - Admin
+#####################
+data_log:
+  name: Pi-Data
+  entities:
+  - sensor.memory_free
+  - sensor.cpu_temperature
+  - sensor.processor_use

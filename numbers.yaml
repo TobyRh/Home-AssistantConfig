@@ -1,0 +1,30 @@
+  kommode_color_mired:
+    name: Kommode farve red
+    initial: 100
+    min: 0
+    max: 599
+    step: 1
+  kommode_color_r:
+    name: Kommode farve red
+    initial: 100
+    min: 0
+    max: 255
+    step: 1
+  kommode_color_g:
+    name: Kommode farve green
+    initial: 100
+    min: 0
+    max: 255
+    step: 1
+  kommode_color_b:
+    name: Kommode farve blue
+    initial: 100
+    min: 0
+    max: 255
+    step: 1
+  flux_brightness:
+    name: Flux Brightness
+    initial: 200
+    min: 0
+    max: 255
+    step: 1

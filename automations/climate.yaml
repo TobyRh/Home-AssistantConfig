@@ -1,0 +1,81 @@
+#####################
+## CLIMATE
+#####################
+- alias: Night Mode
+  trigger:
+    - platform: state
+      entity_id: input_boolean.asleep_bool
+      to: 'on'
+  action:
+    - service: script.set_temp
+- alias: Day Mode
+  trigger:
+    - platform: state
+      entity_id: group.all_lights
+      to: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.asleep_bool
+          state: 'off'
+        - condition: state
+          entity_id: input_boolean.first_light
+          state: 'off'
+  action:
+    - service: script.set_temp
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.first_light
+- alias: Temperature change
+  trigger:
+    - platform: state
+      entity_id: proximity.home
+    - platform: state
+      entity_id: sensor.kristine_status
+  action:
+    - service: script.set_temp
+- alias: 'CO2 Light'
+  trigger:
+    platform: state
+    entity_id: input_boolean.co2_check
+    to: 'on'
+  action:
+    - service: script.record_kommode
+    - service: light.turn_on
+      entity_id: light.kommode
+      data_template:
+        color_name: >
+              {% if states.sensor.netatmo_inny_co2_2.state | int > 2000 %} crimson
+              {% elif states.sensor.netatmo_inny_co2_2.state | int > 1500 %} red
+              {% elif states.sensor.netatmo_inny_co2_2.state | int > 1000 %} orange
+              {% elif states.sensor.netatmo_inny_co2_2.state | int > 750 %} yellow
+              {% elif states.sensor.netatmo_inny_co2_2.state | int < 750 %} green
+              {% endif %}
+    - delay: 00:00:03
+    - service: script.return_check
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.co2_check
+- alias: Door Close noti
+  trigger:
+    platform: state
+    entity_id: binary_sensor.sudden_temp_change
+    to: 'on'
+    for:
+      minutes: 8
+  action:
+    - service: script.door_script
+- alias: Prepare for bed
+  trigger:
+    platform: state
+    entity_id: binary_sensor.sudden_temp_sove
+    to: 'on'
+  condition:
+    condition: time
+    after: '20:00:00'
+    before: '05:30:00'
+  action:
+    service: climate.set_temperature
+    entity_id: climate.sovevrelse
+    data:
+      temperature: 14

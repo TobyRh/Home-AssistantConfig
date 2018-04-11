@@ -1,0 +1,67 @@
+- platform: statistics
+  entity_id: sensor.stuen_temperature
+  name: Stuen Temp Stats
+  sampling_size: 4
+
+- platform: template
+  sensors:
+    ensuite_humidity_delta:
+      friendly_name: "Ensuite Humidity Delta"
+      value_template: "{{ states.sensor.stuen_temp_stats_mean.attributes.max_value | float - states.sensor.stuen_temp_stats_mean.attributes.min_value | float }}"
+      unit_of_measurement: "°C"
+
+- platform: time_date
+  display_options:
+    - 'time'
+
+- platform: yr
+
+- platform: template
+  sensors:
+    forecast:
+      value_template: '{{states.weather.dark_sky.attributes.daily_forecast_summary}}'
+    last_update_netatmo:
+      value_template: >-
+        {% if '{{(as_timestamp(now()) - as_timestamp(states.sensor.time.last_changed)) <= 0}}' %}
+          {{relative_time(states.sensor.netatmo_inny_co2_2.last_changed)}} ago
+        {% endif %}
+      friendly_name: Last Update
+
+- platform: systemmonitor
+  resources: 
+    - type: processor_use
+    - type: memory_free
+
+- platform: template
+  sensors:
+    tobias_status:
+      value_template: '{{ states.input_select.tobias_status_dropdown.state }}'
+      friendly_name: 'Tobias'
+    kristine_status:
+      value_template: '{{ states.input_select.kristine_status_dropdown.state }}'
+      friendly_name: 'Kristine'
+
+- platform: speedtest
+  minute: 30
+  hour:
+    - 0
+    - 6
+    - 12
+    - 18
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+
+- platform: pocketcasts
+  username: !secret pocket_user
+  password: !secret pocket_password
+
+#- platform: pi_hole
+
+- platform: command_line
+  name: CPU Temperature
+  command: "cat /sys/class/thermal/thermal_zone0/temp"
+  # If errors occur, remove degree symbol below
+  unit_of_measurement: "°C"
+  value_template: '{{ value | multiply(0.001) }}'

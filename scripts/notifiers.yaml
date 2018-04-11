@@ -1,0 +1,63 @@
+#####################
+## NOTIFY
+#####################
+send_test:
+  alias: Send Test
+  sequence:
+  - alias: Send test
+    service: notify.html5
+    data_template:
+      message: "{{ message }}"
+      data:
+        tag: "{{ tag }}"
+        actions:
+        - action: "{{ action }}"
+          title: "{{ title }}"
+      target:
+      - OnePlus_Chrome
+      - unnamed device_32
+send_tobias:
+  alias: Send Tobias
+  sequence:
+  - alias: Send tobias
+    service: notify.html5
+    data_template:
+      message: "{{ message }}"
+      target:
+      - OnePlus_Chrome
+      data:
+        tag: "{{ tag }}"
+        actions:
+        - action: "{{ action }}"
+          title: "{{ title }}"
+send_kristine:
+  alias: Send Kris
+  sequence:
+  - alias: Send Kris
+    service: notify.html5
+    data_template:
+      message: "{{ message }}"
+      target:
+      - unnamed device_32
+      data:
+        tag: '{{ tag }}'
+        actions:
+        - action: "{{ action }}"
+          title: "{{ title }}"
+notify_dist:
+  alias: Sends to the proper people
+  sequence:
+  - alias: Sends to the proper people
+    service_template: >
+      {% if is_state("sensor.tobias_status", "Home") and is_state("sensor.kristine_status", "Home") -%}
+        script.send_test
+      {% elif is_state("sensor.tobias_status", "Home") and "sensor.kristine_status" != "Home" -%}
+        script.send_tobias
+      {% else %}
+        script.send_kristine
+      {%endif %}
+    data_template:
+      message: '{{ message }}'
+      tag: '{{ tag }}'
+      action: "{{ action }}"
+      title: "{{ title }}"

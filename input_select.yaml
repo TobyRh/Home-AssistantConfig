@@ -1,0 +1,16 @@
+  tobias_status_dropdown:
+    name: Tobias
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+      - Extended Away
+  kristine_status_dropdown:
+    name: Kristine
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+      - Extended Away

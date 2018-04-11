@@ -1,0 +1,110 @@
+#####################
+## LIGHTS
+#####################
+movie_script:
+  alias: Notify at home
+  sequence:
+  - alias: Notify at home
+    service: script.notify_dist
+    data_template:
+      message: Enable Movie mode?
+      tag: 'notification-movie-mode'
+      action: movie_mode
+      title: Enable
+notify_movie_mode:
+  alias: notify others that movie mode is enabled
+  sequence:
+    service: script.notify_dist
+    data_template:
+      message: 'Filmtilstand er aktiveret'
+      tag: 'notification-movie-mode'
+record_brightness:
+  alias: Record brightness for movie mode purposes
+  sequence:
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.flux_brightness
+        value: '{% if states.light.sofaen.state == "off" %}0{% else %}{{states.light.sofaen.attributes.brightness}}{% endif %}'
+return_brightness:
+  alias: Return kommode to recorded value
+  sequence:
+    - service: light.turn_on
+      entity_id: [light.kommode, light.spisebordet]
+      data_template:
+        brightness: '{{states.input_number.flux_brightness.state | int}}'
+        transition: 10
+
+record_kommode:
+  alias: Record kommode color to slider
+  sequence:
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.kommode_color_r
+        value: '{% if states.light.kommode.state == "off" %}0{% else %}{{states.light.kommode.attributes.rgb_color[0]}}{% endif %}'
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.kommode_color_g
+        value: '{% if states.light.kommode.state == "off" %}0{% else %}{{states.light.kommode.attributes.rgb_color[1]}}{% endif %}'
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.kommode_color_b
+        value: '{% if states.light.kommode.state == "off" %}0{% else %}{{states.light.kommode.attributes.rgb_color[2]}}{% endif %}'
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.kommode_color_mired
+        value: '{% if states.light.kommode.state == "off" %}0{% else %}{{states.light.kommode.attributes.color_temp}}{% endif %}'
+
+return_check:
+  alias: Checks state to return to
+  sequence:
+    - service: script.turn_on
+      data_template:
+        entity_id: >
+         {% if states.input_number.kommode_color_r.state | int == 0 and states.input_number.kommode_color_g.state | int == 0 and states.input_number.kommode_color_b.state | int == 0 -%}
+            script.kommode_off
+         {% else %}
+            script.return_kommode
+         {% endif %}
+
+kommode_off:
+  alias: Turn of kommode
+  sequence:
+    - service: light.turn_off
+      entity_id: light.kommode
+
+return_kommode:
+  alias: Return kommode to recorded value
+  sequence:
+    - service: light.turn_on
+      entity_id: light.kommode
+      data_template:
+#        color_temp: '{{states.input_number.kommode_color_mired.state | int}}'
+        rgb_color: ['{{states.input_number.kommode_color_r.state | int}}', '{{states.input_number.kommode_color_g.state | int}}', '{{states.input_number.kommode_color_b.state | int}}']
+
+co2_wait:
+  alias: co2 wait and check
+  sequence:
+    - delay:
+        seconds: 5
+    - service: script.co2_alarm
+    - service: script.turn_off
+      entity_id: script.co2_wait
+
+co2_alarm:
+    sequence:
+    - condition: numeric_state
+      entity_id: sensor.netatmo_stue_co2
+      above: 1100
+    - service: script.record_kommode
+    - service: light.turn_on
+      entity_id: light.kommode
+      data_template:
+        color_name: >
+              {% if states.sensor.netatmo_stue_co2.state | int > 1100 %} red
+              {% elif states.sensor.netatmo_stue_co2.state | int > 750 %} orangered
+              {% elif states.sensor.netatmo_stue_co2.state | int > 500 %} yellow
+              {% elif states.sensor.netatmo_stue_co2.state | int < 500 %} green
+              {% endif %}
+    - delay: 00:00:03
+    - service: script.return_check
+    - service: script.co2_wait

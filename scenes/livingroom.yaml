@@ -1,0 +1,40 @@
+  - name: Livingroom normal
+    entities:
+        light.sofaen:
+            state: on
+            transition: 6
+            brightness_pct: 80
+        light.spisebordet:
+            state: on
+            transition: 6
+            brightness_pct: 80
+        light.kommode:
+            state: on
+            transition: 6
+            brightness_pct: 50
+        light.hallway:
+            state: on
+            transition: 10
+            brightness_pct: 80
+  - name: Livingroom dim
+    entities:
+        light.sofaen:
+            state: on
+            transition: 10
+            brightness_pct: 15
+        light.spisebordet:
+            state: on
+            transition: 10
+            brightness_pct: 20
+        light.kommode:
+            state: on
+            transition: 10
+            brightness_pct: 25
+  - name: Livingroom off
+    entities:
+        light.sofaen:
+            state: off
+            transition: 6
+        light.spisebordet:
+            state: off
+            transition: 6
